@@ -21,12 +21,12 @@ class Product(BaseModel):
     price = FloatField(default=0.0)
 
 
-class Customer(BaseModel):
-    author_id = IntegerField()
+#class Customer(BaseModel):
+#    author_id = IntegerField()
 
 class Review(BaseModel):
     product_id = ForeignKeyField(Product)
-    author_id = ForeignKeyField(Customer)
+    author_id = IntegerField()
     rating = IntegerField(default=0)
     title = TextField(default="")
     review = TextField(default="")

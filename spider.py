@@ -15,7 +15,6 @@ if __name__ == "__main__":
 
     db.create_tables([Review])
     db.create_tables([Product])
-    db.create_tables([Customer])
     
     """
     get and save all products
@@ -49,11 +48,6 @@ if __name__ == "__main__":
             tmp_reviews = requests.get(q).json()['Results']
             for review in tmp_reviews:
                 author_id = int(review['AuthorId'])
-                c = Customer()
-                setattr(c, 'author_id', author_id)
-                c.save()
-
-
                 product_id = int(review['ProductId'])
                 rating = int(review['Rating'])
                 review_text = review['ReviewText']
