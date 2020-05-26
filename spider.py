@@ -15,7 +15,7 @@ if __name__ == "__main__":
 
     db.create_tables([Review])
     db.create_tables([Product])
-    
+
     """
     get and save all products
     """
@@ -52,13 +52,17 @@ if __name__ == "__main__":
                 rating = int(review['Rating'])
                 review_text = review['ReviewText']
                 review_title = review['Title']
-                p = Review()
-                setattr(p, 'author_id', author_id)
-                setattr(p, 'product_id', product_id)
-                setattr(p, 'rating', rating)
-                setattr(p, 'title', review_title)
-                setattr(p, 'review', review_text)
-                p.save()
-
+                t = review['SubmissionTime']
+                try:
+                    p = Review()
+                    setattr(p, 'author_id', author_id)
+                    setattr(p, 'product_id', product_id)
+                    setattr(p, 'rating', rating)
+                    setattr(p, 'title', review_title)
+                    setattr(p, 'review', review_text)
+                    setattr(p, 'time', t)
+                    p.save()
+                except:
+                    pass
 
 
