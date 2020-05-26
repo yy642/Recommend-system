@@ -25,11 +25,16 @@ class Product(BaseModel):
 #    author_id = IntegerField()
 
 class Review(BaseModel):
-    product_id = ForeignKeyField(Product)
-    author_id = IntegerField()
-    rating = IntegerField(default=0)
+    product_id = IntegerField(default=-1)
+    author_id = IntegerField(default=-1)
+    rating = IntegerField(default=-1)
     title = TextField(default="")
     review = TextField(default="")
+    time = DateTimeField()
+    class Meta:
+        indexes = (
+            (('product_id', 'author_id', 'time'), True),
+        )
 
 #if __name__ == "__main__":
 #    db.create_tables([Review, Product, Customer])
