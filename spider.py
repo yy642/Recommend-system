@@ -15,7 +15,7 @@ if __name__ == "__main__":
 
     db.create_tables([Review])
     db.create_tables([Product])
-
+    
     """
     get and save all products
     """
@@ -64,5 +64,7 @@ if __name__ == "__main__":
                     p.save()
                 except:
                     pass
+
+
 
 

@@ -85,12 +85,3 @@ print("testing", np.sum(testing_set != -1) /total_valid_reviews)
 np.save("training_mat.npy", training_set)
 np.save("testing_mat.npy", testing_set)
 
-"""
-
-with open('Author2product.json', 'w') as fp:
-    json.dump(author2product, fp)
-with open('Product2author.json', 'w') as fp:
-    json.dump(product2author, fp)
-with open('Author_product_rating.json', 'w') as fp:
-    json.dump(author_product_rating, fp)
-"""

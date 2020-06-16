@@ -8,28 +8,6 @@ to-do
 (3) Deep learning?
 (4) add reviews + deep learning?
 """
-rating = np.load("training_mat.npy")
-
-N_users, N_items = rating.shape
-"""
-compute the mean rating
-"""
-overall_mean = np.mean(rating[rating != -1])
-mean_rating_user = np.zeros([N_users])
-for i in range(N_users):
-    rated = rating[i] != -1
-    if np.sum(rated) == 0:
-        mean_rating_user[i] = overall_mean
-    else:
-        mean_rating_user[i] = np.mean(rating[i][rated])
-
-mean_rating_item = np.zeros([N_items])
-for i in range(N_items):
-    rated = rating[:, i] != -1
-    if np.sum(rated) == 0:
-        mean_rating_item[i] = overall_mean
-    else:
-        mean_rating_item[i] = np.mean(rating[:, i][rated])
 
 def cos_similiarity(u, v):
     rated_u = u != -1
@@ -38,7 +16,6 @@ def cos_similiarity(u, v):
     if np.sum(total) == 0:
         return -1
     return np.dot(u[total],v[total])/np.sqrt(np.dot(u[rated_u], u[rated_u]) * np.dot(v[rated_v], v[rated_v]))
-
 
 
 def user_user_similarity(rating):
@@ -51,6 +28,7 @@ def user_user_similarity(rating):
             similarity[j][i] = sim
         similarity[i][i] = 1.0
     return similarity
+
 
 def item_item_similarity(rating):
     N_item = len(rating[0])
@@ -114,22 +92,51 @@ def predict_item_based(i, j, K, mean_rating, rating, sim_mat):
     return score
 
 
-
-sim_mat_user = user_user_similarity(rating)
-sim_mat_item = item_item_similarity(rating)
-
-
-def MSE(predict, K, rating, mean_rating, sim_mat, truth):
+def MAE(predict, K, rating, mean_rating, sim_mat, truth):
     errors=[]
     for i in range(len(truth)):
         for j in range(len(truth[0])):
             if truth[i][j] != -1:
                 errors.append(np.abs((predict(i, j, K, mean_rating, rating, sim_mat) - truth[i, j])))
     return [np.mean(errors), np.std(errors)]
+
+rating = np.load("training_mat.npy")
+
+N_users, N_items = rating.shape
+
+"""
+compute the mean rating
+"""
+overall_mean = np.mean(rating[rating != -1])
+mean_rating_user = np.zeros([N_users])
+
+for i in range(N_users):
+    rated = rating[i] != -1
+    if np.sum(rated) == 0:
+        mean_rating_user[i] = overall_mean
+    else:
+        mean_rating_user[i] = np.mean(rating[i][rated])
+
+mean_rating_item = np.zeros([N_items])
+for i in range(N_items):
+    rated = rating[:, i] != -1
+    if np.sum(rated) == 0:
+        mean_rating_item[i] = overall_mean
+    else:
+        mean_rating_item[i] = np.mean(rating[:, i][rated])
+
+sim_mat_user = user_user_similarity(rating)
+sim_mat_item = item_item_similarity(rating)
+
+
 testing = np.load("testing_mat.npy")
 for K in [1,2,3,4,5]:
     print("K=", K)
-    #print(MSE(predict_user_based, K, rating, mean_rating_user, sim_mat_user, rating))
-    #print(MSE(predict_item_based, K, rating, mean_rating_item, sim_mat_item, rating))
-    print(MSE(predict_user_based, K, rating, mean_rating_user, sim_mat_user, testing))
-    print(MSE(predict_item_based, K, rating, mean_rating_item, sim_mat_item, testing))
+    print("training user-based")
+    print(MAE(predict_user_based, K, rating, mean_rating_user, sim_mat_user, rating))
+    print("training item-based")
+    print(MAE(predict_item_based, K, rating, mean_rating_item, sim_mat_item, rating))
+    print("testing user-based")
+    print(MAE(predict_user_based, K, rating, mean_rating_user, sim_mat_user, testing))
+    print("training user-based")
+    print(MAE(predict_item_based, K, rating, mean_rating_item, sim_mat_item, testing))
